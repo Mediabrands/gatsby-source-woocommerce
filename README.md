@@ -51,10 +51,10 @@ plugins:[
       // OPTIONAL: How many results to retrieve *per request*
       per_page: 100,
       // OPTIONAL: Custom WP REST API url prefix, only needed if not using 
-      // the default wp-json prefix.
-      wpAPIPrefix: 'wp-rest',
+      // the default prefix ('wp-json').
+      // wpAPIPrefix: 'wp-json',
       // OPTIONAL: Support for URLs with ports, e.g. 8080; defaults to no port
-      port: '8080',
+      // port: '8080',
       // OPTIONAL: Encoding; default to 'utf8'
       encoding: 'utf8',
       // OPTIONAL: Custom Axios config (see https://github.com/axios/axios) - note that this can override other options.

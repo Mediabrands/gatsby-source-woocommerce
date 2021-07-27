@@ -56,37 +56,60 @@ exports.sourceNodes = async (
   // Fetch Node data for a given field name
   const fetchNodes = async (fieldName) => {
     let data_ = [];
+    let translations = [];
     let page = 1;
     let pages;
 
     do {
       let args = per_page ? { per_page, page } : { page };
       await WooCommerce.get(fieldName, args)
-        .then((response) => {
-          if (response.status === 200) {
-            data_ = [...data_, ...response.data];
-            pages = parseInt(response.headers["x-wp-totalpages"]);
-            page++;
-          } else {
-            console.warn(`
+      .then((response) => {
+        if (response.status === 200) {
+          data_ = [...data_, ...response.data];
+          if(fieldName === 'products') {
+            translations = [...translations, ...data_.map(data => data.translations.en)]
+
+          }
+          pages = parseInt(response.headers["x-wp-totalpages"]);
+          page++;
+        } else {
+          console.warn(`
               ========== WARNING FOR FIELD ${fieldName} ===========
               The following error status was produced: ${response.data}
               ================== END WARNING ==================
             `);
-            return [];
-          }
-        })
-        .catch((error) => {
-          console.warn(`
+          return [];
+        }
+      })
+      .catch((error) => {
+        console.warn(`
             ========== WARNING FOR FIELD ${fieldName} ===========
             The following error status was produced: ${error}
             ================== END WARNING ==================
           `);
-          return [];
-        });
+        return [];
+      });
     } while (page <= pages);
 
-    return data_;
+    if(fieldName === 'products') {
+      translations = translations.filter(id => id != undefined).filter((v, i, a) => a.indexOf(v) === i)
+      for(let i=0; i<translations.length; i++){
+        const response = await WooCommerce.get(`products/${translations[i]}`);
+        if(response.status === 200) {
+          data_ = [...data_, response.data];
+        } else {
+          console.warn(`
+              ========== WARNING FOR FIELD ${fieldName} ===========
+              The following error status was produced: ${response.data}
+              ================== END WARNING ==================
+            `);
+        }
+      }
+      return data_;
+    } else{
+      return data_;
+    }
+
   };
 
   // Loop over each field set in configOptions and process/create nodes
@@ -95,11 +118,13 @@ exports.sourceNodes = async (
     for (const field of array) {
       const fieldName = normaliseFieldName(field);
       let tempNodes = await fetchNodes(field);
+
       if (verbose) {
         timeStampedLog(
           `gatsby-source-woocommerce: Fetching ${tempNodes.length} nodes for field: ${field}`
         );
       }
+
       tempNodes = tempNodes.map((node) => ({
         ...node,
         id: createNodeId(
@@ -148,11 +173,10 @@ exports.sourceNodes = async (
           nodes.length
         } nodes mapped, processed, and created in ${(new Date().getTime() -
           startTime) /
-          1000}s`
+        1000}s`
       );
     }
   }
-
   await fetchNodesAndCreate(fields);
   return;
 };
@@ -172,18 +196,18 @@ exports.createSchemaCustomization = ({ actions, schema }, configOptions) => {
           type: fieldType,
           resolve(source, args, context, info) {
             return context.nodeModel
-              .getAllNodes({ type: fieldType })
-              .find((node) => node.wordpress_id === source.wordpress_parent_id);
+            .getAllNodes({ type: fieldType })
+            .find((node) => node.wordpress_id === source.wordpress_parent_id);
           },
         },
         wordpress_children: {
           type: `[${fieldType}]`,
           resolve(source, args, context, info) {
             return context.nodeModel
-              .getAllNodes({ type: fieldType })
-              .filter(
-                (node) => node.wordpress_parent_id === source.wordpress_id
-              );
+            .getAllNodes({ type: fieldType })
+            .filter(
+              (node) => node.wordpress_parent_id === source.wordpress_id
+            );
           },
         },
       },

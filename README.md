@@ -1,5 +1,5 @@
 # Note
-**Please note: the original author of this package is [Marc Glasser](https://github.com/marcaaron/) -- see the [the original repo](https://github.com/marcaaron/gatsby-source-woocommerce) and [package](https://www.npmjs.com/package/gatsby-source-woocommerce).**
+**Please note: the original author of this package is [Dominik Paschke](https://github.com/pasdo501//) -- see the [the original repo](https://github.com/pasdo501/gatsby-source-woocommerce) and [package](https://www.npmjs.com/package/gatsby-source-woocommerce).**
 # gatsby-source-woocommerce
 
 Source plugin for [Gatsby](https://www.gatsbyjs.org/). Pulls in data from protected routes via the [WooCommerce REST API](http://woocommerce.github.io/woocommerce-rest-api-docs/) with credentials.
@@ -13,11 +13,11 @@ Source plugin for [Gatsby](https://www.gatsbyjs.org/). Pulls in data from protec
 - [Changelog](#changelog)
 ## Install
 
-`npm install --save @pasdo501/gatsby-source-woocommerce`
+`npm install --save git+ssh://git@github.com:Mediabrands/gatsby-source-woocommerce.git`
 
 or 
 
-`yarn add @pasdo501/gatsby-source-woocommerce`
+`yarn add git+ssh://git@github.com:Mediabrands/gatsby-source-woocommerce.git`
 
 ## How to Use
 

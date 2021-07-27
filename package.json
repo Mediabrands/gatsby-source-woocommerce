@@ -1,5 +1,5 @@
 {
-  "name": "mbww/gatsby-source-woocommerce",
+  "name": "@mbww/gatsby-source-woocommerce",
   "version": "0.0.1",
   "description": "Gatsby source plugin for WooCommerce with improved field type and polylang  support",
   "main": "gatsby-node.js",
